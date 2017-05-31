@@ -13,20 +13,20 @@ type LRSPolyhedron{N} <: Polyhedron{N, Rational{BigInt}}
     noredundantinequality::Bool
     noredundantgenerator::Bool
 
-    function LRSPolyhedron(ine::HRepresentation{N, Rational{BigInt}}, ext::VRepresentation{N, Rational{BigInt}}, hld::Bool, vld::Bool, nri::Bool, nrg::Bool)
-        new(ine, nothing, ext, nothing, hld, vld, nri, nrg)
+    function LRSPolyhedron{N}(ine::HRepresentation{N, Rational{BigInt}}, ext::VRepresentation{N, Rational{BigInt}}, hld::Bool, vld::Bool, nri::Bool, nrg::Bool) where {N}
+        new{N}(ine, nothing, ext, nothing, hld, vld, nri, nrg)
     end
-    function LRSPolyhedron(ine::HRepresentation{N, Rational{BigInt}}, ::Void, hld::Bool, vld::Bool, nri::Bool, nrg::Bool)
-        new(ine, nothing, nothing, nothing, hld, vld, nri, nrg)
+    function LRSPolyhedron{N}(ine::HRepresentation{N, Rational{BigInt}}, ::Void, hld::Bool, vld::Bool, nri::Bool, nrg::Bool) where {N}
+        new{N}(ine, nothing, nothing, nothing, hld, vld, nri, nrg)
     end
-    function LRSPolyhedron(::Void, ext::VRepresentation{N, Rational{BigInt}}, hld::Bool, vld::Bool, nri::Bool, nrg::Bool)
-        new(nothing, nothing, ext, nothing, hld, vld, nri, nrg)
+    function LRSPolyhedron{N}(::Void, ext::VRepresentation{N, Rational{BigInt}}, hld::Bool, vld::Bool, nri::Bool, nrg::Bool) where {N}
+        new{N}(nothing, nothing, ext, nothing, hld, vld, nri, nrg)
     end
-    function LRSPolyhedron(ine::HRepresentation{N, Rational{BigInt}})
-        new(ine, nothing, nothing, nothing, false, false, false, false)
+    function LRSPolyhedron{N}(ine::HRepresentation{N, Rational{BigInt}}) where {N}
+        new{N}(ine, nothing, nothing, nothing, false, false, false, false)
     end
-    function LRSPolyhedron(ext::VRepresentation{N, Rational{BigInt}})
-        new(nothing, nothing, ext, nothing, false, false, false, false)
+    function LRSPolyhedron{N}(ext::VRepresentation{N, Rational{BigInt}}) where {N}
+        new{N}(nothing, nothing, ext, nothing, false, false, false, false)
     end
 end
 

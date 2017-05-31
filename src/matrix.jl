@@ -86,8 +86,8 @@ type LRSLinearitySpace{N}
     hull::Bool
     homogeneous::Bool
 
-    function LRSLinearitySpace(Lin::Clrs_mp_matrix, nlin, n, hull, homogeneous)
-        m = new(Lin, nlin, n, hull, homogeneous)
+    function LRSLinearitySpace{N}(Lin::Clrs_mp_matrix, nlin, n, hull, homogeneous) where {N}
+        m = new{N}(Lin, nlin, n, hull, homogeneous)
         finalizer(m, myfree)
         m
     end
@@ -98,8 +98,8 @@ type LRSInequalityMatrix{N} <: HRepresentation{N, Rational{BigInt}}
     Q::Ptr{Clrs_dat}
     status::Symbol
     lin::Nullable{LRSLinearitySpace{N}}
-    function LRSInequalityMatrix(P::Ptr{Clrs_dic}, Q::Ptr{Clrs_dat})
-        m = new(P, Q, :AtNoBasis, nothing)
+    function LRSInequalityMatrix{N}(P::Ptr{Clrs_dic}, Q::Ptr{Clrs_dat}) where {N}
+        m = new{N}(P, Q, :AtNoBasis, nothing)
         finalizer(m, myfree)
         m
     end
@@ -114,8 +114,8 @@ type LRSGeneratorMatrix{N} <: VRepresentation{N, Rational{BigInt}}
     Q::Ptr{Clrs_dat}
     status::Symbol
     lin::Nullable{LRSLinearitySpace{N}}
-    function LRSGeneratorMatrix(P::Ptr{Clrs_dic}, Q::Ptr{Clrs_dat})
-        m = new(P, Q, :AtNoBasis, nothing)
+    function LRSGeneratorMatrix{N}(P::Ptr{Clrs_dic}, Q::Ptr{Clrs_dat}) where {N}
+        m = new{N}(P, Q, :AtNoBasis, nothing)
         finalizer(m, myfree)
         m
     end
@@ -125,7 +125,7 @@ decomposedfast(ine::LRSGeneratorMatrix) = false
 eltype{N}(::Type{LRSGeneratorMatrix{N}}) = Rational{BigInt}
 eltype(::LRSGeneratorMatrix) = Rational{BigInt}
 
-typealias LRSMatrix{N} Union{LRSInequalityMatrix{N}, LRSGeneratorMatrix{N}}
+const LRSMatrix{N} = Union{LRSInequalityMatrix{N}, LRSGeneratorMatrix{N}}
 
 function linset(matrix::LRSMatrix)
     extractinputlinset(unsafe_load(matrix.Q))

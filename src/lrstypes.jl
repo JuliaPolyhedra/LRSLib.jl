@@ -9,10 +9,10 @@ end
 const Clrs_true = Clong(1)
 const Clrs_false = Clong(0)
 
-typealias Clrs_mp GMPInteger
-typealias Clrs_mp_vector Ptr{Clrs_mp}
-typealias Clrs_mp_matrix Ptr{Ptr{Clrs_mp}}
-bitstype 800 Clrs_fname
+const Clrs_mp = GMPInteger
+const Clrs_mp_vector = Ptr{Clrs_mp}
+const Clrs_mp_matrix = Ptr{Ptr{Clrs_mp}}
+primitive type Clrs_fname 800 end
 
 function extractbigintat(array::Clrs_mp_vector, i::Int)
     tmp = BigInt()

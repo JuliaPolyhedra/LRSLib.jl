@@ -1,43 +1,45 @@
 export enumtomat, generatorproducer
 function generatorproducer(m::LRSMatrix)
-    # code from here is borrowed from lrs_main
-    if !(m.status in [:AtNoBasis, :AtFirstBasis, :Empty])
-        error("I am not at first basis")
-    end
-
-    # Pivot to a starting dictionary
-    if m.status == :AtNoBasis
-        getfirstbasis(m)
-    end
-    if !isnull(m.lin) # FIXME should I do that if m.status is :Empty ?
-        L = getmat(get(m.lin))
-        for i in 1:size(L, 1)
-            produce(L[i, :])
+    Channel() do c
+        # code from here is borrowed from lrs_main
+        if !(m.status in [:AtNoBasis, :AtFirstBasis, :Empty])
+            error("I am not at first basis")
         end
-    end
 
-    if m.status != :Empty
-        # We initiate reverse search from this dictionary
-        # getting new dictionaries until the search is complete
-        # User can access each output line from output which is
-        # vertex/ray/facet from the lrs_mp_vector output
-
-        while true
-            for col in 0:getd(m)
-                output = getsolution(m, col)
-                if output !== nothing
-                    produce(output)
-                end
+        # Pivot to a starting dictionary
+        if m.status == :AtNoBasis
+            getfirstbasis(m)
+        end
+        if !isnull(m.lin) # FIXME should I do that if m.status is :Empty ?
+            L = getmat(get(m.lin))
+            for i in 1:size(L, 1)
+                put!(c, L[i, :])
             end
-            if !getnextbasis(m)
-                break
+        end
+
+        if m.status != :Empty
+            # We initiate reverse search from this dictionary
+            # getting new dictionaries until the search is complete
+            # User can access each output line from output which is
+            # vertex/ray/facet from the lrs_mp_vector output
+
+            while true
+                for col in 0:getd(m)
+                    output = getsolution(m, col)
+                    if output !== nothing
+                        put!(c, output)
+                    end
+                end
+                if !getnextbasis(m)
+                    break
+                end
             end
         end
     end
 end
 function enumtomat{N}(m::LRSMatrix{N})
     M = Matrix{Rational{BigInt}}(0, N+1)
-    for output in Task(() -> generatorproducer(m))
+    for output in generatorproducer(m)
         M = [M; output']
     end
     M
