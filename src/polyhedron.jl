@@ -109,6 +109,12 @@ Polyhedra.changefulldim{N}(::Type{LRSPolyhedron{N}}, n::Int)= LRSPolyhedron{n}
 (::Type{LRSPolyhedron{N}}){N, T}(it::HRepIterator{N,T}) = LRSPolyhedron{N}(LRSInequalityMatrix{N}(it))
 (::Type{LRSPolyhedron{N}}){N, T}(it::VRepIterator{N,T}) = LRSPolyhedron{N}(LRSGeneratorMatrix{N}(it))
 
+function (::Type{LRSPolyhedron{N}}){N}(eqs::EqIterator, ineqs::IneqIterator)
+    LRSPolyhedron{N}(LRSInequalityMatrix{N}(eqs, ineqs))
+end
+function (::Type{LRSPolyhedron{N}}){N}(points::PointIterator, rays::RayIterator)
+    LRSPolyhedron{N}(LRSGeneratorMatrix{N}(points, rays))
+end
 function (::Type{LRSPolyhedron{N}}){N}(; eqs=nothing, ineqs=nothing, points=nothing, rays=nothing)
     noth = eqs === nothing && ineqs === nothing
     notv = points === nothing && rays === nothing
@@ -119,9 +125,9 @@ function (::Type{LRSPolyhedron{N}}){N}(; eqs=nothing, ineqs=nothing, points=noth
         error("LRSPolyhedron constructed with a combination of eqs/ineqs with points/rays")
     end
     if notv
-        LRSPolyhedron{N}(LRSInequalityMatrix{N}(eqs=eqs, ineqs=ineqs))
+        LRSPolyhedron{N}(eqs, ineqs)
     else
-        LRSPolyhedron{N}(LRSGeneratorMatrix{N}(points=points, rays=rays))
+        LRSPolyhedron{N}(points, rays)
     end
 end
 

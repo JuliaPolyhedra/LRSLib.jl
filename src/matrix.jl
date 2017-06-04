@@ -196,9 +196,12 @@ function (::Type{LRSGeneratorMatrix{N}}){N}(it::VRepIterator{N, Rational{BigInt}
     P, Q = initmatrix(false, it)
     LRSGeneratorMatrix{N}(P, Q)
 end
-function (::Type{LRSGeneratorMatrix{N}}){N}(; rays=nothing, points=nothing)
+function (::Type{LRSGeneratorMatrix{N}}){N}(points, rays)
     P, Q = initmatrix(false, rays, points)
     LRSGeneratorMatrix{N}(P, Q)
+end
+function (::Type{LRSGeneratorMatrix{N}}){N}(; rays=nothing, points=nothing)
+    LRSGeneratorMatrix{N}(points, rays)
 end
 
 nvreps(ext::LRSGeneratorMatrix) = length(ext)
