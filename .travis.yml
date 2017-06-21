@@ -10,11 +10,9 @@ addons:
     - libgmp-dev
 notifications:
   email: false
-script:
-  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - julia -e 'Pkg.init(); Pkg.add("GeometryTypes"); Pkg.checkout("GeometryTypes")'
-  - julia -e 'Pkg.clone("https://github.com/JuliaPolyhedra/Polyhedra.jl"); Pkg.checkout("Polyhedra"); Pkg.build("Polyhedra")'
-  - julia -e 'Pkg.clone(pwd()); Pkg.build("LRSLib"); Pkg.test("LRSLib"; coverage=true)'
+# script:
+#   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+#   - julia -e 'Pkg.clone(pwd()); Pkg.build("LRSLib"); Pkg.test("LRSLib"; coverage=true)'
 after_success:
   # push coverage results to Coveralls
   - julia -e 'cd(Pkg.dir("LRSLib")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(process_folder())'
