@@ -1,10 +1,6 @@
-import MathProgBase
-const MPB = MathProgBase
-import JuMP
-
 struct Library <: Polyhedra.Library
-    solver::MPB.AbstractMathProgSolver
-    function Library(solver=JuMP.UnsetSolver())
+    solver::Polyhedra.Polyhedra.SolverOrNot
+    function Library(solver=nothing)
         new(solver)
     end
 end
@@ -20,26 +16,26 @@ mutable struct Polyhedron <: Polyhedra.Polyhedron{Rational{BigInt}}
     vlinearitydetected::Bool
     noredundantinequality::Bool
     noredundantgenerator::Bool
-    solver::MPB.AbstractMathProgSolver
+    solver::Polyhedra.SolverOrNot
 
-    function Polyhedron(ine::HRepresentation{Rational{BigInt}}, ext::VRepresentation{Rational{BigInt}}, hld::Bool, vld::Bool, nri::Bool, nrg::Bool, solver::MPB.AbstractMathProgSolver)
+    function Polyhedron(ine::HRepresentation{Rational{BigInt}}, ext::VRepresentation{Rational{BigInt}}, hld::Bool, vld::Bool, nri::Bool, nrg::Bool, solver::Polyhedra.SolverOrNot)
         new(ine, nothing, ext, nothing, hld, vld, nri, nrg, solver)
     end
-    function Polyhedron(ine::HRepresentation{Rational{BigInt}}, ::Nothing, hld::Bool, vld::Bool, nri::Bool, nrg::Bool, solver::MPB.AbstractMathProgSolver)
+    function Polyhedron(ine::HRepresentation{Rational{BigInt}}, ::Nothing, hld::Bool, vld::Bool, nri::Bool, nrg::Bool, solver::Polyhedra.SolverOrNot)
         new(ine, nothing, nothing, nothing, hld, vld, nri, nrg, solver)
     end
-    function Polyhedron(::Nothing, ext::VRepresentation{Rational{BigInt}}, hld::Bool, vld::Bool, nri::Bool, nrg::Bool, solver::MPB.AbstractMathProgSolver)
+    function Polyhedron(::Nothing, ext::VRepresentation{Rational{BigInt}}, hld::Bool, vld::Bool, nri::Bool, nrg::Bool, solver::Polyhedra.SolverOrNot)
         new(nothing, nothing, ext, nothing, hld, vld, nri, nrg, solver)
     end
-    function Polyhedron(ine::HRepresentation{Rational{BigInt}}, solver::MPB.AbstractMathProgSolver)
+    function Polyhedron(ine::HRepresentation{Rational{BigInt}}, solver::Polyhedra.SolverOrNot)
         new(ine, nothing, nothing, nothing, false, false, false, false, solver)
     end
-    function Polyhedron(ext::VRepresentation{Rational{BigInt}}, solver::MPB.AbstractMathProgSolver)
+    function Polyhedron(ext::VRepresentation{Rational{BigInt}}, solver::Polyhedra.SolverOrNot)
         new(nothing, nothing, ext, nothing, false, false, false, false, solver)
     end
 end
-Polyhedron(h::HRepresentation, solver::MPB.AbstractMathProgSolver) = Polyhedron(HRepresentation{Rational{BigInt}}(h), solver)
-Polyhedron(v::VRepresentation, solver::MPB.AbstractMathProgSolver) = Polyhedron(VRepresentation{Rational{BigInt}}(v), solver)
+Polyhedron(h::HRepresentation, solver::Polyhedra.SolverOrNot) = Polyhedron(HRepresentation{Rational{BigInt}}(h), solver)
+Polyhedron(v::VRepresentation, solver::Polyhedra.SolverOrNot) = Polyhedron(VRepresentation{Rational{BigInt}}(v), solver)
 
 Polyhedra.FullDim(p::Polyhedron) = Polyhedra.FullDim_rep(p.ine, p.inem, p.ext, p.extm)
 Polyhedra.library(::Polyhedron) = Library()
@@ -114,10 +110,10 @@ end
 # Implementation of Polyhedron's mandatory interface
 Polyhedra.polyhedron(rep::Representation, lib::Library) = Polyhedron(rep, lib.solver)
 
-function Polyhedron(d::Polyhedra.FullDim, hits::Polyhedra.HIt...; solver=JuMP.UnsetSolver())
+function Polyhedron(d::Polyhedra.FullDim, hits::Polyhedra.HIt...; solver=nothing)
     Polyhedron(HMatrix(d, hits...), solver)
 end
-function Polyhedron(d::Polyhedra.FullDim, vits::Polyhedra.VIt...; solver=JuMP.UnsetSolver())
+function Polyhedron(d::Polyhedra.FullDim, vits::Polyhedra.VIt...; solver=nothing)
     Polyhedron(VMatrix(d, vits...), solver)
 end
 
@@ -196,7 +192,7 @@ end
 #end
 _getrepfor(p::Polyhedron, ::Polyhedra.HIndex, status::Symbol) = getinem(p, status)
 _getrepfor(p::Polyhedron, ::Polyhedra.VIndex, status::Symbol) = getextm(p, status)
-function Polyhedra.isredundant(p::Polyhedron, idx::Polyhedra.Index; strongly=false, cert=false, solver=Polyhedra.solver(p))
+function Polyhedra.isredundant(p::Polyhedron, idx::Polyhedra.Index; strongly=false, cert=false, solver=nothing)
     @assert !strongly && !cert
     redundi(_getrepfor(p, idx, :AlmostFresh), idx.value) # FIXME does it need to be fresh ?
 end
