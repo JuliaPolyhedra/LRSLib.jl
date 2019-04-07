@@ -39,7 +39,7 @@ Polyhedron(v::VRepresentation, solver::Polyhedra.SolverOrNot) = Polyhedron(VRepr
 
 Polyhedra.FullDim(p::Polyhedron) = Polyhedra.FullDim_rep(p.ine, p.inem, p.ext, p.extm)
 Polyhedra.library(::Polyhedron) = Library()
-Polyhedra.default_solver(p::Polyhedron) = p.solver
+Polyhedra.default_solver(p::Polyhedron; T=nothing) = p.solver
 Polyhedra.supportssolver(::Type{<:Polyhedron}) = true
 
 Polyhedra.hvectortype(::Union{Polyhedron, Type{Polyhedron}}) = Polyhedra.hvectortype(LiftedHRepresentation{Rational{BigInt}, Matrix{Rational{BigInt}}})
