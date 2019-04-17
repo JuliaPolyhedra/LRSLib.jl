@@ -6,5 +6,5 @@ include(joinpath(polyhedra_test, "polyhedra.jl"))
 lpsolver = tuple()
 @testset "Polyhedra tests" begin
     polyhedratest(LRSLib.Library(with_optimizer(GLPK.Optimizer)),
-                  ["empty", "cubedecompose", "largedecompose"])
+                  ["empty", "cubedecompose", "largedecompose", "recipe"])
 end
