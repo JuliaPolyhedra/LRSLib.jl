@@ -279,7 +279,7 @@ end
 function extractrow(matrix::HMatrix, i::Int)
     P = unsafe_load(matrix.P)
     Q = unsafe_load(matrix.Q)
-    b = extractrow(P, Q, fulldim(matrix), i, 0)
+    b = extractrow(P, Q, getd(matrix), i, 0)
     β = b[1]
     a = -b[2:end]
     a, β
@@ -294,7 +294,7 @@ function extractrow(matrix::VMatrix, i::Int)
         #d = Q.n-offset-1 # FIXME when it is modified...
         @assert Q.hull == Clrs_true
         offset = Q.homogeneous == Clrs_true ? 0 : 1
-        b = extractrow(P, Q, fulldim(matrix), i, offset)
+        b = extractrow(P, Q, getd(matrix)-1, i, offset)
         a = b[2:end]
     end
     (a,) # Needs to be a tuple, see Base.get(::RepMatrix, ...)
