@@ -1,6 +1,7 @@
 export enumtomat, generatorproducer
+
 function generatorproducer(m::RepMatrix)
-    Channel() do c
+    Channel(; ctype = Vector{Rational{BigInt}}) do c
         # code from here is borrowed from lrs_main
         if !(m.status in [:AtNoBasis, :AtFirstBasis, :Empty])
             error("I am not at first basis")
@@ -37,12 +38,18 @@ function generatorproducer(m::RepMatrix)
         end
     end
 end
+
 function enumtomat(m::RepMatrix)
-    M = Matrix{Rational{BigInt}}(undef, 0, fulldim(m)+1)
-    for output in generatorproducer(m)
-        M = [M; output']
+    rows = Vector{Vector{Rational{BigInt}}}(undef, 0)
+    sizehint!(rows, fulldim(m)) # heuristic size hint
+    for row in generatorproducer(m)
+        push!(rows, row)
     end
-    M
+    M = Matrix{Rational{BigInt}}(undef, length(row_list), fulldim(m)+1)
+    for i in eachindex(rows)
+        M[i,:] .= rows[i]
+    end
+    return M
 end
 
 function Base.convert(::Type{LiftedHRepresentation{Rational{BigInt}}}, m::VMatrix)
