@@ -47,7 +47,7 @@ end
 
 function fillmatrix(inequality::Bool, P::Ptr{Clrs_dic}, Q::Ptr{Clrs_dat}, itr::Polyhedra.ElemIt, offset::Int)
     for (i, item) in enumerate(itr)
-        a = vec(coord(lift(item)))
+        a = convert(Vector{Rational{BigInt}}, vec(coord(lift(item))))
         setrow(P, Q, offset+i, inequality ? -a : a, !islin(item))
     end
 end

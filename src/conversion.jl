@@ -1,6 +1,7 @@
 export enumtomat, generatorproducer
+
 function generatorproducer(m::RepMatrix)
-    Channel() do c
+    Channel(; ctype = Vector{Rational{BigInt}}) do c
         # code from here is borrowed from lrs_main
         if !(m.status in [:AtNoBasis, :AtFirstBasis, :Empty])
             error("I am not at first basis")
@@ -13,7 +14,11 @@ function generatorproducer(m::RepMatrix)
         if m.lin !== nothing # FIXME should I do that if m.status is :Empty ?
             L = getmat(m.lin)
             for i in 1:size(L, 1)
-                put!(c, L[i, :])
+                @static if VERSION >= v"1.1"
+                    put!(c, L[i, :])
+                else
+                    put!(c, convert(Vector{Rational{BigInt}}, L[i, :]))
+                end
             end
         end
 
@@ -27,7 +32,11 @@ function generatorproducer(m::RepMatrix)
                 for col in 0:getd(m)
                     output = getsolution(m, col)
                     if output !== nothing
-                        put!(c, output)
+                        @static if VERSION >= v"1.1"
+                            put!(c, output)
+                        else
+                            put!(c, convert(Vector{Rational{BigInt}}, output))
+                        end
                     end
                 end
                 if !getnextbasis(m)
@@ -37,12 +46,18 @@ function generatorproducer(m::RepMatrix)
         end
     end
 end
+
 function enumtomat(m::RepMatrix)
-    M = Matrix{Rational{BigInt}}(undef, 0, fulldim(m)+1)
-    for output in generatorproducer(m)
-        M = [M; output']
+    rows = Vector{Vector{Rational{BigInt}}}(undef, 0)
+    sizehint!(rows, fulldim(m)) # heuristic size hint
+    for row in generatorproducer(m)
+        push!(rows, row)
     end
-    M
+    M = Matrix{Rational{BigInt}}(undef, length(rows), fulldim(m)+1)
+    for i in eachindex(rows)
+        M[i,:] .= rows[i]
+    end
+    return M
 end
 
 function Base.convert(::Type{LiftedHRepresentation{Rational{BigInt}}}, m::VMatrix)
