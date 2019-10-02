@@ -1,7 +1,7 @@
 name = "LRSLib"
 uuid = "262c1cb6-76e2-5873-868b-19ece3183cc5"
 repo = "https://github.com/JuliaPolyhedra/LRSLib.jl.git"
-version = "0.4.0"
+version = "0.4.1"
 
 [deps]
 BinDeps = "9e28174c-4ba2-5203-b857-d8d62c4213ee"
