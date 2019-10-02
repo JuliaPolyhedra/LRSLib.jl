@@ -14,7 +14,11 @@ function generatorproducer(m::RepMatrix)
         if m.lin !== nothing # FIXME should I do that if m.status is :Empty ?
             L = getmat(m.lin)
             for i in 1:size(L, 1)
-                put!(c, L[i, :])
+                @static if VERSION >= v"1.1"
+                    put!(c, L[i, :])
+                else
+                    put!(c, convert(Vector{Rational{BigInt}}, L[i, :]))
+                end
             end
         end
 
@@ -28,7 +32,11 @@ function generatorproducer(m::RepMatrix)
                 for col in 0:getd(m)
                     output = getsolution(m, col)
                     if output !== nothing
-                        put!(c, output)
+                        @static if VERSION >= v"1.1"
+                            put!(c, output)
+                        else
+                            put!(c, convert(Vector{Rational{BigInt}}, output))
+                        end
                     end
                 end
                 if !getnextbasis(m)
