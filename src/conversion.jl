@@ -45,7 +45,7 @@ function enumtomat(m::RepMatrix)
     for row in generatorproducer(m)
         push!(rows, row)
     end
-    M = Matrix{Rational{BigInt}}(undef, length(row_list), fulldim(m)+1)
+    M = Matrix{Rational{BigInt}}(undef, length(rows), fulldim(m)+1)
     for i in eachindex(rows)
         M[i,:] .= rows[i]
     end
