@@ -1,5 +1,5 @@
 struct Library <: Polyhedra.Library
-    solver::Polyhedra.Polyhedra.SolverOrNot
+    solver
     function Library(solver=nothing)
         new(solver)
     end
@@ -16,26 +16,26 @@ mutable struct Polyhedron <: Polyhedra.Polyhedron{Rational{BigInt}}
     vlinearitydetected::Bool
     noredundantinequality::Bool
     noredundantgenerator::Bool
-    solver::Polyhedra.SolverOrNot
+    solver
 
-    function Polyhedron(ine::HRepresentation{Rational{BigInt}}, ext::VRepresentation{Rational{BigInt}}, hld::Bool, vld::Bool, nri::Bool, nrg::Bool, solver::Polyhedra.SolverOrNot)
+    function Polyhedron(ine::HRepresentation{Rational{BigInt}}, ext::VRepresentation{Rational{BigInt}}, hld::Bool, vld::Bool, nri::Bool, nrg::Bool, solver)
         new(ine, nothing, ext, nothing, hld, vld, nri, nrg, solver)
     end
-    function Polyhedron(ine::HRepresentation{Rational{BigInt}}, ::Nothing, hld::Bool, vld::Bool, nri::Bool, nrg::Bool, solver::Polyhedra.SolverOrNot)
+    function Polyhedron(ine::HRepresentation{Rational{BigInt}}, ::Nothing, hld::Bool, vld::Bool, nri::Bool, nrg::Bool, solver)
         new(ine, nothing, nothing, nothing, hld, vld, nri, nrg, solver)
     end
-    function Polyhedron(::Nothing, ext::VRepresentation{Rational{BigInt}}, hld::Bool, vld::Bool, nri::Bool, nrg::Bool, solver::Polyhedra.SolverOrNot)
+    function Polyhedron(::Nothing, ext::VRepresentation{Rational{BigInt}}, hld::Bool, vld::Bool, nri::Bool, nrg::Bool, solver)
         new(nothing, nothing, ext, nothing, hld, vld, nri, nrg, solver)
     end
-    function Polyhedron(ine::HRepresentation{Rational{BigInt}}, solver::Polyhedra.SolverOrNot)
+    function Polyhedron(ine::HRepresentation{Rational{BigInt}}, solver)
         new(ine, nothing, nothing, nothing, false, false, false, false, solver)
     end
-    function Polyhedron(ext::VRepresentation{Rational{BigInt}}, solver::Polyhedra.SolverOrNot)
+    function Polyhedron(ext::VRepresentation{Rational{BigInt}}, solver)
         new(nothing, nothing, ext, nothing, false, false, false, false, solver)
     end
 end
-Polyhedron(h::HRepresentation, solver::Polyhedra.SolverOrNot) = Polyhedron(HRepresentation{Rational{BigInt}}(h), solver)
-Polyhedron(v::VRepresentation, solver::Polyhedra.SolverOrNot) = Polyhedron(VRepresentation{Rational{BigInt}}(v), solver)
+Polyhedron(h::HRepresentation, solver) = Polyhedron(HRepresentation{Rational{BigInt}}(h), solver)
+Polyhedron(v::VRepresentation, solver) = Polyhedron(VRepresentation{Rational{BigInt}}(v), solver)
 
 Polyhedra.FullDim(p::Polyhedron) = Polyhedra.FullDim_rep(p.ine, p.inem, p.ext, p.extm)
 Polyhedra.library(::Polyhedron) = Library()
