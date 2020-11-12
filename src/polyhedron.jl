@@ -97,6 +97,13 @@ function clearfield!(p::Polyhedron)
     noredundantinequality = false
     noredundantgenerator = false
 end
+
+function Polyhedra.sethrep!(p::Polyhedron, h::HRepresentation{Rational{BigInt}})
+    p.ine = h
+end
+function Polyhedra.setvrep!(p::Polyhedron, v::VRepresentation{Rational{BigInt}})
+    p.ext = v
+end
 function Polyhedra.resethrep!(p::Polyhedron, h::HRepresentation{Rational{BigInt}})
     clearfield!(p)
     p.ine = h
