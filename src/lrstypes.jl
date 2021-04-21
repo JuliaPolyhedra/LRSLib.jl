@@ -48,6 +48,8 @@ mutable struct Clrs_dic  # dynamic dictionary data
 end
 
 mutable struct Clrs_dat      # global problem data
+    redineq::Clong      # holds indices of rows for redundancy check
+    Ain::Clrs_mp_matrix # used only in redund to hold input matrix
     Gcd::Clrs_mp_vector     # Gcd of each row of numerators
     Lcm::Clrs_mp_vector     # Lcm for each row of input denominators
     output::Clrs_mp_vector     # One line of output dimensioned to n
@@ -60,12 +62,14 @@ mutable struct Clrs_dat      # global problem data
     unbounded::Clong    # lp unbounded
     fname::Clrs_fname    # input file name from line 1 of input
 
-    inequality::Ptr{Clong}    # indices of inequalities corr. to cobasic ind
     # initially holds order used to find starting
     # basis, default: m,m-1,...,2,1
     facet::Ptr{Clong}    # cobasic indices for restart in needed
     redundcol::Ptr{Clong}    # holds columns which are redundant
+    inequality::Ptr{Clong}    # indices of inequalities corr. to cobasic ind
     linearity::Ptr{Clong}    # holds cobasic indices of input linearities
+    remain::Ptr{Clong}
+    startcob::Ptr{Clong}
     minratio::Ptr{Clong}    # used for lexicographic ratio test
     temparray::Ptr{Clong}    # for sorting indices, dimensioned to d
     isave::Ptr{Clong}
@@ -110,6 +114,7 @@ mutable struct Clrs_dat      # global problem data
     cest7::Clong
     cest8::Clong
     cest9::Clong    # ests: 0=rays,1=vert,2=bases,3=vol,4=int vert
+    nextineq::Clong
     #*** flags  **********
     allbases::Clong    # TRUE if all bases should be printed
     bound::Clong                 # TRUE if upper/lower bound on objective given
@@ -117,10 +122,14 @@ mutable struct Clrs_dat      # global problem data
     debug::Clong
     dualdeg::Clong    # TRUE if start dictionary is dual degenerate
     etrace::Clong    # turn off debug at basis # strace
+    extract::Clong
     frequency::Clong    # frequency to print cobasis indices
     geometric::Clong    # TRUE if incident vertex prints after each ray
     getvolume::Clong    # do volume calculation
     givenstart::Clong    # TRUE if a starting cobasis is given
+    giveoutput::Clong
+    verifyredund::Clong
+    noredundcheck::Clong
     homogeneous::Clong    # TRUE if all entries in column one are zero
     hull::Clong      # do convex hull computation if TRUE
     incidence::Clong             # print all tight inequalities (vertices/rays)
@@ -129,8 +138,10 @@ mutable struct Clrs_dat      # global problem data
     maximize::Clong    # flag for LP maximization
     maxoutput::Clong       # if positive, maximum number of output lines
     maxcobases::Clong       # if positive, after maxcobasis unexplored subtrees reported
+    messages::Clong
     minimize::Clong    # flag for LP minimization
     mindepth::Clonglong    # do not backtrack above mindepth
+    mplrs::Clong
     nash::Clong                  # TRUE for computing nash equilibria
     nonnegative::Clong    # TRUE if last d constraints are nonnegativity
     polytope::Clong    # TRUE for facet computation of a polytope

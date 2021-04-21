@@ -1,0 +1,11 @@
+--- makefile.orig	2018-07-03 13:37:36.000000000 +0900
++++ makefile	2019-01-20 12:17:48.000000000 +0900
+@@ -193,7 +193,7 @@ SHLIBBIN=lrs-shared lrsnash-shared
+ # Building (linking) the shared library, and relevant symlinks.
+ 
+ ${SHLIB}: ${SHLIBOBJ}
+-	$(CC) -shared -Wl,-soname=$(SONAME) $(SHLIBFLAGS) -o $@ ${SHLIBOBJ} -lgmp
++	$(CC) -shared -Wl,-install_name,$(SONAME) $(SHLIBFLAGS) -o $@ ${SHLIBOBJ} -L${LIBDIR} -lgmp
+ 
+ ${SONAME}: ${SHLIB}
+ 	ln -sf ${SHLIB} ${SONAME}
