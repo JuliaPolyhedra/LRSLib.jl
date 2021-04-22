@@ -199,7 +199,7 @@ end
 #end
 _getrepfor(p::Polyhedron, ::Polyhedra.HIndex, status::Symbol) = getinem(p, status)
 _getrepfor(p::Polyhedron, ::Polyhedra.VIndex, status::Symbol) = getextm(p, status)
-function Polyhedra.isredundant(p::Polyhedron, idx::Polyhedra.HIndex; strongly=false, cert=false, solver=nothing)
+function Polyhedra.isredundant(p::Polyhedron, idx::Polyhedra.Index; strongly=false, cert=false, solver=nothing)
     @assert !strongly && !cert
     redundi(_getrepfor(p, idx, :AlmostFresh), idx.value) # FIXME does it need to be fresh ?
 end
