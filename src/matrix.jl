@@ -22,12 +22,23 @@ function initmatrix(filename::AbstractString)
     (P,Q)
 end
 
+function _init_dat(Q::Ptr{Clrs_dat}, m, n, hull)
+    unsafe_field_store!(Q, :m, m)
+    unsafe_field_store!(Q, :n, n)
+    if hull
+        unsafe_field_store!(Q, :hull, Clrs_true)
+        unsafe_field_store!(Q, :polytope, Clrs_true)
+    else
+        unsafe_field_store!(Q, :hull, Clrs_false)
+    end
+end
+
 # FIXME still needed ?
 function initmatrix(M::Matrix{Rational{BigInt}}, linset, Hrep::Bool)
     m = Clong(size(M, 1))
     n = Clong(size(M, 2))
     Q = lrs_alloc_dat()
-    @lrs_ccall init_dat Nothing (Ptr{Clrs_dat}, Clong, Clong, Clong) Q m n Clong(Hrep ? 0 : 1)
+    _init_dat(Q, m, n, !Hrep)
     P = lrs_alloc_dic(Q)
     #Q->getvolume= TRUE; # compute the volume # TODO cheap do it
     for i in 1:m
@@ -59,7 +70,7 @@ function initmatrix(d::Polyhedra.FullDim, inequality::Bool, itr::Polyhedra.ElemI
     m = cs[end]
     offset = [0; cs[1:end-1]]
     Q = lrs_alloc_dat()
-    @lrs_ccall init_dat Nothing (Ptr{Clrs_dat}, Clong, Clong, Clong) Q m n Clong(inequality ? 0 : 1)
+    _init_dat(Q, m, n, !inequality)
     P = lrs_alloc_dic(Q)
     #Q->getvolume= TRUE; # compute the volume # TODO cheap do it
     fillmatrix.(inequality, P, Q, itr, offset)
