@@ -27,9 +27,11 @@ end
 
 include("lrstypes.jl")
 
+const NONAME = "LRSLib Julia wrapper"
+
 function __init__()
     # lrslib segfault if the name is `C_NULL`.
-    if Clrs_false == (@lrs_ccall init Clong (Ptr{Cchar},) "LRSLib Julia wrapper")
+    if Clrs_false == (@lrs_ccall init Clong (Ptr{Cchar},) NONAME)
         error("Initialization of LRS failed")
     end
 end

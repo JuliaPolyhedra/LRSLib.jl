@@ -1,5 +1,5 @@
 function lrs_alloc_dat()
-    @lrs_ccall alloc_dat Ptr{Clrs_dat} (Ptr{Cchar},) C_NULL
+    @lrs_ccall alloc_dat Ptr{Clrs_dat} (Ptr{Cchar},) NONAME
 end
 
 function lrs_alloc_dic(Q::Ptr{Clrs_dat})
