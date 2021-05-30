@@ -1,3 +1,7 @@
+if VERSION >= v"1.3"
+    exit()  # Use lrslib_jll instead.
+end
+
 module LRSLib
 
 using BinDeps
@@ -5,10 +9,14 @@ using Polyhedra
 using LinearAlgebra
 using Markdown
 
-if isfile(joinpath(dirname(@__FILE__),"..","deps","deps.jl"))
-    include("../deps/deps.jl")
-    else
-    error("LRSLib not properly installed. Please run Pkg.build(\"LRSLib\")")
+@static if VERSION < v"1.3"
+    if isfile(joinpath(dirname(@__FILE__),"..","deps","deps.jl"))
+        include("../deps/deps.jl")
+        else
+        error("LRSLib not properly installed. Please run Pkg.build(\"LRSLib\")")
+    end
+else
+    using lrslib_jll
 end
 
 macro lrs_ccall(f, args...)
