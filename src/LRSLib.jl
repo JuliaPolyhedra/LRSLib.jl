@@ -1,6 +1,5 @@
 module LRSLib
 
-using BinDeps
 using Polyhedra
 using LinearAlgebra
 using Markdown
