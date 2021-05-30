@@ -1,7 +1,3 @@
-if VERSION >= v"1.3"
-    exit()  # Use lrslib_jll instead.
-end
-
 module LRSLib
 
 using BinDeps
