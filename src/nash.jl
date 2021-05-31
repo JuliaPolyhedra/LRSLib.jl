@@ -47,8 +47,7 @@ function solve_nash(hr1::HMatrix, hr2::HMatrix)
     NEs = NTuple{2,Vector{Rational{BigInt}}}[]
 
     # Step 1
-    FirstTime = cglobal((:FirstTime, liblrsnash), Clong)
-    unsafe_store!(FirstTime, Clrs_true)
+    ccall((:resetNashSolver, liblrsnash), Cvoid, ())
 
     unsafe_field_store!(hr1.Q, :nash, Clrs_true)
     unsafe_field_store!(hr2.Q, :nash, Clrs_true)

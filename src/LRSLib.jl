@@ -2,8 +2,17 @@ module LRSLib
 
 using Polyhedra
 using LinearAlgebra
-using lrslib_jll
 using Markdown
+
+@static if VERSION < v"1.3"
+    if isfile(joinpath(dirname(@__FILE__),"..","deps","deps.jl"))
+        include("../deps/deps.jl")
+        else
+        error("LRSLib not properly installed. Please run Pkg.build(\"LRSLib\")")
+    end
+else
+    using lrslib_jll
+end
 
 macro lrs_ccall(f, args...)
     quote
@@ -21,8 +30,11 @@ end
 
 include("lrstypes.jl")
 
+const NONAME = "LRSLib Julia wrapper"
+
 function __init__()
-    if Clrs_false == (@lrs_ccall init Clong (Ptr{Cchar},) C_NULL)
+    # lrslib segfault if the name is `C_NULL`.
+    if Clrs_false == (@lrs_ccall init Clong (Ptr{Cchar},) NONAME)
         error("Initialization of LRS failed")
     end
 end
