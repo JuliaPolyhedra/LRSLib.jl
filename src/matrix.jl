@@ -104,7 +104,7 @@ mutable struct HMatrix <: Polyhedra.MixedHRep{Rational{BigInt}}
     Q::Ptr{Clrs_dat}
     status::Symbol
     lin::Union{Nothing, LRSLinearitySpace}
-    function HMatrix(N::Int, P::Ptr{Clrs_dic}, Q::Ptr{Clrs_dat})
+    function HMatrix(N::Integer, P::Ptr{Clrs_dic}, Q::Ptr{Clrs_dat})
         @assert N == getd(P)
         m = new(N, P, Q, :AtNoBasis, nothing)
         finalizer(myfree, m)
@@ -120,7 +120,7 @@ mutable struct VMatrix <: Polyhedra.MixedVRep{Rational{BigInt}}
     status::Symbol
     lin::Union{Nothing, LRSLinearitySpace}
     cone::Bool # If true, LRS will not return any point so we need to add the origin
-    function VMatrix(N::Int, P::Ptr{Clrs_dic}, Q::Ptr{Clrs_dat})
+    function VMatrix(N::Integer, P::Ptr{Clrs_dic}, Q::Ptr{Clrs_dat})
         @assert N + 1 == getd(P)
         m = _length(P)
         cone = !iszero(m) # If there is no ray and no point, it is empty so we should not add the origin
