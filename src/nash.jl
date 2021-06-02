@@ -279,7 +279,7 @@ function nashsolve(filename1::AbstractString, filename2::AbstractString)
 
     # From lrs_solve_nash_legacy
     if Q2.nlinearity > 0
-        ccall((:free, liblrs), Cvoid, (Ptr{Cvoid},), Q2.linearity)
+        ccall(:free, Cvoid, (Ptr{Cvoid},), Q2.linearity)
     end
     ptr = @lrs_ccall2(
         xcalloc, Ptr{Cvoid}, (Clong, Clong, Clong, Cstring),
