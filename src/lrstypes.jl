@@ -48,7 +48,7 @@ mutable struct Clrs_dic  # dynamic dictionary data
 end
 
 mutable struct Clrs_dat      # global problem data
-    redineq::Clong      # holds indices of rows for redundancy check
+    redineq::Ptr{Clong}      # holds indices of rows for redundancy check
     Ain::Clrs_mp_matrix # used only in redund to hold input matrix
     Gcd::Clrs_mp_vector     # Gcd of each row of numerators
     Lcm::Clrs_mp_vector     # Lcm for each row of input denominators
@@ -104,16 +104,16 @@ mutable struct Clrs_dat      # global problem data
     totalnodes::Clong    # count total number of tree nodes evaluated
     runs::Clong      # probes for estimate function
     seed::Clong      # seed for random number generator
-    cest0::Clong
-    cest1::Clong
-    cest2::Clong
-    cest3::Clong
-    cest4::Clong
-    cest5::Clong
-    cest6::Clong
-    cest7::Clong
-    cest8::Clong
-    cest9::Clong    # ests: 0=rays,1=vert,2=bases,3=vol,4=int vert
+    cest0::Cdouble
+    cest1::Cdouble
+    cest2::Cdouble
+    cest3::Cdouble
+    cest4::Cdouble
+    cest5::Cdouble
+    cest6::Cdouble
+    cest7::Cdouble
+    cest8::Cdouble
+    cest9::Cdouble    # ests: 0=rays,1=vert,2=bases,3=vol,4=int vert
     nextineq::Clong
     #*** flags  **********
     allbases::Clong    # TRUE if all bases should be printed
