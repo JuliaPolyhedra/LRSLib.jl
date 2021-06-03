@@ -13,8 +13,6 @@ As written in the [user guide of lrs](http://cgm.cs.mcgill.ca/~avis/C/lrslib/USE
 I have [forked lrs](https://github.com/blegat/lrslib) to add a few functions to help doing the wrapper.
 These changes are not upstream yet so this version is used instead of the upstream version.
 
-**Important notice**: Windows is not supported yet.
-
 [build-img]: https://github.com/JuliaPolyhedra/LRSLib.jl/workflows/CI/badge.svg?branch=master
 [build-url]: https://github.com/JuliaPolyhedra/LRSLib.jl/actions?query=workflow%3ACI
 [codecov-img]: http://codecov.io/github/JuliaPolyhedra/LRSLib.jl/coverage.svg?branch=master
