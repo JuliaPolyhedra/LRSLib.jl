@@ -4,14 +4,13 @@ repo = "https://github.com/JuliaPolyhedra/LRSLib.jl.git"
 version = "0.8.0"
 
 [deps]
-Libdl = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Markdown = "d6f4376e-aef5-505a-96c1-9c027394607a"
 Polyhedra = "67491407-f73d-577b-9b50-8179a7c68029"
 lrslib_jll = "3873f7d0-7b7c-52c3-bdf4-8ab39b8f337a"
 
 [compat]
-Polyhedra = "0.6.14"
+Polyhedra = "0.7"
 julia = "1.6"
 lrslib_jll = "= 0.3.3"
 
