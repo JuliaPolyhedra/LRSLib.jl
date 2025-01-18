@@ -31,7 +31,7 @@ function redund(m::RepMatrix)
 
         status = checkindex(m, index)
         if :redundant == checkindex(m, index)
-            push!(redset, ineq)
+            push!(redset, ineq + 1)
         end
     end
     redset
