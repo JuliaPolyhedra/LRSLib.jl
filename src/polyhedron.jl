@@ -55,6 +55,7 @@ function getine(p::Polyhedron)
         else
             p.ine = LiftedHRepresentation(getextm(p, :Fresh))
             p.inem = nothing
+            p.hlinearitydetected = true
         end
     end
     return p.ine
@@ -72,6 +73,7 @@ function getext(p::Polyhedron)
         else
             p.ext = LiftedVRepresentation(getinem(p, :Fresh))
             p.extm = nothing
+            p.vlinearitydetected = true
         end
     end
     return p.ext
@@ -150,7 +152,7 @@ function Polyhedra.detecthlinearity!(p::Polyhedron)
         p.inem = nothing
         p.ine = nothing
         getine(p)
-        p.hlinearitydetected = true
+        # getine sets hlinearity as detected
     end
 end
 function Polyhedra.detectvlinearity!(p::Polyhedron)
@@ -159,7 +161,7 @@ function Polyhedra.detectvlinearity!(p::Polyhedron)
         p.extm = nothing
         p.ext = nothing
         getext(p)
-        p.vlinearitydetected = true
+        # getext sets vlinearity as detected
     end
 end
 function Polyhedra.removehredundancy!(p::Polyhedron)
