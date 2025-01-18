@@ -185,7 +185,7 @@ function Polyhedra.removevredundancy!(p::Polyhedron)
         detectvlinearity!(p)
         ext = getext(p)
         extm = getextm(p, :AlmostFresh) # FIXME does it need to be fresh ?
-        redset = redund(extm)
+        redset = BitSet(redund(extm) .+ 1)
         nonred = setdiff(BitSet(1:size(ext.R, 1)), redset)
         nonred = collect(setdiff(nonred, ext.linset))
         lin = collect(ext.linset)
