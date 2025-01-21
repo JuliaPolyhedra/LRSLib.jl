@@ -27,7 +27,7 @@ function redund(m::RepMatrix)
 
     redset = BitSet()
     for index in (lastdv + 1):(m_A + d)
-        ineq = unsafe_load_inequality(m, index) # the input inequality number corr. to this index
+        ineq = _unsafe_load_inequality(m, index) # the input inequality number corr. to this index
 
         status = checkindex(m, index)
         if :redundant == checkindex(m, index)
@@ -46,7 +46,7 @@ function redundi(m::RepMatrix, ineq::Int)
     d = unsafe_load(m.P).d
     lastdv = unsafe_load(m.Q).lastdv
 
-    index = lastdv + findfirst(i -> ineq == unsafe_load_inequality(m, i), (lastdv + 1):(m_A + d))
+    index = lastdv + findfirst(i -> ineq == _unsafe_load_inequality(m, i), (lastdv + 1):(m_A + d))
 
     :redundant == checkindex(m, index)
 end

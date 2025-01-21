@@ -55,7 +55,7 @@ function initmatrix(M::Matrix{Rational{BigInt}}, linset, Hrep::Bool)
     (P, Q)
 end
 
-function unsafe_load_inequality(m::Matrix, idx)
+function _unsafe_load_inequality(m::Matrix, idx)
     Q = unsafe_load(m.Q)
     return unsafe_load(Q.inequality, idx - Q.lastdv + 1)
 end
