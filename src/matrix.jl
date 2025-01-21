@@ -55,7 +55,6 @@ function initmatrix(M::Matrix{Rational{BigInt}}, linset, Hrep::Bool)
     (P, Q)
 end
 
-
 function fillmatrix(inequality::Bool, P::Ptr{Clrs_dic}, Q::Ptr{Clrs_dat}, itr::Polyhedra.ElemIt, offset::Int)
     for (i, item) in enumerate(itr)
         a = convert(Vector{Rational{BigInt}}, vec(coord(lift(item))))
@@ -175,6 +174,11 @@ Polyhedra.islin(vrep::VMatrix, idx::Polyhedra.VIndex{Rational{BigInt}}) = !(vrep
 
 Polyhedra.done(idxs::Polyhedra.Indices{Rational{BigInt}, ElemT, <:RepMatrix}, idx::Polyhedra.Index{Rational{BigInt}, ElemT}) where {ElemT} = idx.value > length(idxs.rep)
 Base.get(rep::RepMatrix, idx::Polyhedra.Index{Rational{BigInt}}) = Polyhedra.valuetype(idx)(extractrow(rep, idx.value)...)
+
+function _unsafe_load_inequality(m::RepMatrix, idx)
+    Q = unsafe_load(m.Q)
+    return unsafe_load(Q.inequality, idx - Q.lastdv + 1)
+end
 
 # H-representation
 

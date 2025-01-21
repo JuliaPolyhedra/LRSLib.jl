@@ -120,9 +120,9 @@ function nash2_main(hr1::HMatrix, hr2::HMatrix, linindex::Vector{Clong})
     for i in (unsafe_load(Q1).lastdv+1):(unsafe_load(P1).m)
         Row_i = unsafe_load(unsafe_load(P1).Row, i+1)
         if !iszero(extractbigintat(unsafe_load(A1, Row_i+1), 1))
-            j = unsafe_load(
-                unsafe_load(Q1).inequality,
-                unsafe_load(unsafe_load(P1).B, i+1)-unsafe_load(Q1).lastdv+1
+            j = _unsafe_load_inequality(
+                hr1,
+                unsafe_load(unsafe_load(P1).B, i+1),
             )
             if ((unsafe_load(Q1).nlinearity == 0) ||
                 (j < unsafe_load(unsafe_load(Q1).linearity, 1)))
