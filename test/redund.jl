@@ -25,4 +25,13 @@
         end
     end
 
+    @testset "Test for removehredundancy!" begin
+        A = [0 0; -1 0; 0 -1]
+        b = [1, 0, 0]
+        hr = hrep(A, b)
+        p = polyhedron(hr, LRSLib.Library())
+        @test !([-1, 1] in p)
+        removehredundancy!(p)
+        @test !([-1, 1] in p)
+    end
 end
