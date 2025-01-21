@@ -56,7 +56,6 @@ function getine(p::Polyhedron)
             p.ine = LiftedHRepresentation(getextm(p, :Fresh))
             p.inem = nothing
             p.hlinearitydetected = true
-            p.noredundantinequality = true
         end
     end
     return p.ine
@@ -75,7 +74,6 @@ function getext(p::Polyhedron)
             p.ext = LiftedVRepresentation(getinem(p, :Fresh))
             p.extm = nothing
             p.vlinearitydetected = true
-            p.noredundantgenerator = true
         end
     end
     return p.ext
@@ -154,7 +152,7 @@ function Polyhedra.detecthlinearity!(p::Polyhedron)
         p.inem = nothing
         p.ine = nothing
         getine(p)
-        # getine sets hlinearity as detected and no redundant ineq.
+        # getine sets hlinearity as detected
     end
 end
 function Polyhedra.detectvlinearity!(p::Polyhedron)
@@ -163,7 +161,7 @@ function Polyhedra.detectvlinearity!(p::Polyhedron)
         p.extm = nothing
         p.ext = nothing
         getext(p)
-        # getext sets vlinearity as detected and no redundant gen.
+        # getext sets vlinearity as detected
     end
 end
 function Polyhedra.removehredundancy!(p::Polyhedron)
@@ -185,7 +183,7 @@ function Polyhedra.removevredundancy!(p::Polyhedron)
         detectvlinearity!(p)
         ext = getext(p)
         extm = getextm(p, :AlmostFresh) # FIXME does it need to be fresh ?
-        redset = redund(extm)
+        redset = BitSet(redund(extm) .+ 1)
         nonred = setdiff(BitSet(1:size(ext.R, 1)), redset)
         nonred = collect(setdiff(nonred, ext.linset))
         lin = collect(ext.linset)
