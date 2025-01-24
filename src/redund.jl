@@ -1,3 +1,15 @@
+function _inequality_indices(m::HMatrix)
+    # FIXME Not sure what `lastdv` is doing, isn't it just always zero ?
+    lastdv = unsafe_load(m.Q).lastdv
+    return (lastdv + 1):(m_A + d)
+end
+
+function _inequality_indices(m::VMatrix)
+    # FIXME Not sure what `lastdv` is doing, isn't it just always zero ?
+    lastdv = unsafe_load(m.Q).lastdv
+    return (lastdv + 2):(m_A + d + 1)
+end
+
 function redund(m::RepMatrix)
     # if non-negative flag is set, non-negative constraints are not input
     # explicitly, and are not checked for redundancy
@@ -25,19 +37,19 @@ function redund(m::RepMatrix)
     # rows 0..lastdv are cost, decision variables, or linearities
     # other rows need to be tested
 
-    redset = BitSet()
+    redset = [] # FIXME concrete type
     for index in (lastdv + 1):(m_A + d)
-        ineq = _unsafe_load_inequality(m, index) # the input inequality number corr. to this index
 
         status = checkindex(m, index)
         if :redundant == checkindex(m, index)
-            push!(redset, ineq)
+            # the input inequality number corr. to this index
+            push!(redset, _unsafe_load_inequality(m, index))
         end
     end
     redset
 end
 
-function redundi(m::RepMatrix, ineq::Int)
+function Polyhedra.isredundant(m::RepMatrix, ineq::Polyhedra.Index)
     if m.status == :AtNoBasis
         getfirstbasis(m)
     end
