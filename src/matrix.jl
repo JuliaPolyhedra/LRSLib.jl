@@ -182,11 +182,11 @@ end
 
 # For H-rep, LRS internal index `0` corresponds to objective and `1` correspond to the first halfspace/hyperplane
 # so it's the same 1-based indexing than `Polyhedra.HIndex`
-_to_index(::HMatrix{T}, i) = Polyhedra.HIndex{T,HalfSpace{T,Vector{T}}}(i)
+_to_index(::HMatrix{T}, i) where {T} = Polyhedra.HIndex{T,HalfSpace{T,Vector{T}}}(i)
 
 # For V-rep, LRS internal index `0` first halfspace/hyperplane
 # so it's the 0-based indexing instead of `Polyhedra.HIndex` so we need to do `+1`
-_to_index(::VMatrix{T}, i) = Polyhedra.VIndex{T,Vector{T}}(i + 1)
+_to_index(::VMatrix{T}, i) where {T} = Polyhedra.VIndex{T,Vector{T}}(i + 1)
 
 function _unsafe_load_inequality(m::VMatrix, Polyhedra.VIndex)
     Q = unsafe_load(m.Q)
