@@ -184,14 +184,14 @@ end
 # so it's the same 1-based indexing than `Polyhedra.HIndex`
 function _to_index(::HMatrix, i)
     T = Rational{BigInt}
-    return Polyhedra.HIndex{T,HalfSpace{T,Vector{T}}}(i)
+    return Polyhedra.Index{T,HalfSpace{T,Vector{T}}}(i)
 end
 
 # For V-rep, LRS internal index `0` first halfspace/hyperplane
 # so it's the 0-based indexing instead of `Polyhedra.HIndex` so we need to do `+1`
 function _to_index(::VMatrix, i)
     T = Rational{BigInt}
-    return Polyhedra.VIndex{T,Vector{T}}(i + 1)
+    return Polyhedra.Index{T,Vector{T}}(i + 1)
 end
 
 # H-representation
