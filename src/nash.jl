@@ -125,8 +125,8 @@ function nash2_main(hr1::HMatrix, hr2::HMatrix, linindex::Vector{Clong})
                 unsafe_load(unsafe_load(P1).B, i+1),
             )
             if ((unsafe_load(Q1).nlinearity == 0) ||
-                (j < unsafe_load(unsafe_load(Q1).linearity, 1)))
-                unsafe_store!(linearity, j, nlinearity+1)
+                (j.value < unsafe_load(unsafe_load(Q1).linearity, 1)))
+                unsafe_store!(linearity, j.value, nlinearity+1)
                 nlinearity += 1
             end
         end

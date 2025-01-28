@@ -177,7 +177,21 @@ Base.get(rep::RepMatrix, idx::Polyhedra.Index{Rational{BigInt}}) = Polyhedra.val
 
 function _unsafe_load_inequality(m::RepMatrix, idx)
     Q = unsafe_load(m.Q)
-    return unsafe_load(Q.inequality, idx - Q.lastdv + 1)
+    _to_index(m, unsafe_load(Q.inequality, idx - Q.lastdv + 1))
+end
+
+# For H-rep, LRS internal index `0` corresponds to objective and `1` correspond to the first halfspace/hyperplane
+# so it's the same 1-based indexing than `Polyhedra.HIndex`
+function _to_index(::HMatrix, i)
+    T = Rational{BigInt}
+    return Polyhedra.Index{T,HalfSpace{T,Vector{T}}}(i)
+end
+
+# For V-rep, LRS internal index `0` first halfspace/hyperplane
+# so it's the 0-based indexing instead of `Polyhedra.HIndex` so we need to do `+1`
+function _to_index(::VMatrix, i)
+    T = Rational{BigInt}
+    return Polyhedra.Index{T,Vector{T}}(i + 1)
 end
 
 # H-representation

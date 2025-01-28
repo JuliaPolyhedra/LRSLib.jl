@@ -169,7 +169,7 @@ function Polyhedra.removehredundancy!(p::Polyhedron)
     ine = getine(p)
     inem = getinem(p, :AlmostFresh) # FIXME does it need to be fresh ?
     linset = getinputlinsubset(inem)
-    redset = redund(inem)
+    redset = [idx.value for idx in redund(inem)]
     nonred = setdiff(BitSet(1:size(ine.A, 1)), redset)
     nonred = collect(setdiff(nonred, linset))
     lin = collect(linset)
@@ -183,7 +183,7 @@ function Polyhedra.removevredundancy!(p::Polyhedron)
         detectvlinearity!(p)
         ext = getext(p)
         extm = getextm(p, :AlmostFresh) # FIXME does it need to be fresh ?
-        redset = BitSet(redund(extm) .+ 1)
+        redset = [idx.value for idx in redund(extm)]
         nonred = setdiff(BitSet(1:size(ext.R, 1)), redset)
         nonred = collect(setdiff(nonred, ext.linset))
         lin = collect(ext.linset)
@@ -199,7 +199,7 @@ _getrepfor(p::Polyhedron, ::Polyhedra.HIndex, status::Symbol) = getinem(p, statu
 _getrepfor(p::Polyhedron, ::Polyhedra.VIndex, status::Symbol) = getextm(p, status)
 function Polyhedra.isredundant(p::Polyhedron, idx::Polyhedra.Index; strongly=false, cert=false, solver=nothing)
     @assert !strongly && !cert
-    redundi(_getrepfor(p, idx, :AlmostFresh), idx.value) # FIXME does it need to be fresh ?
+    Polyhedra.isredundant(_getrepfor(p, idx, :AlmostFresh), idx) # FIXME does it need to be fresh ?
 end
 # Optional interface
 function Polyhedra.loadpolyhedron!(p::Polyhedron, filename::AbstractString, ::Type{Val{:ext}})
