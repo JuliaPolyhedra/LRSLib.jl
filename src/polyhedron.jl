@@ -169,7 +169,7 @@ function Polyhedra.removehredundancy!(p::Polyhedron)
     ine = getine(p)
     inem = getinem(p, :AlmostFresh) # FIXME does it need to be fresh ?
     linset = getinputlinsubset(inem)
-    redset = [idx.value for idx in redund(extm)]
+    redset = [idx.value for idx in redund(inem)]
     nonred = setdiff(BitSet(1:size(ine.A, 1)), redset)
     nonred = collect(setdiff(nonred, linset))
     lin = collect(linset)
