@@ -65,16 +65,16 @@ function Base.convert(::Type{LiftedHRepresentation{Rational{BigInt}}}, m::VMatri
     A = enumtomat(m)
     LiftedHRepresentation{Rational{BigInt}}(A, linset)
 end
-HRepresentation(m::VMatrix) = Base.convert(LiftedHRepresentation{Rational{BigInt}}, m)
-LiftedHRepresentation(m::VMatrix) = Base.convert(LiftedHRepresentation{Rational{BigInt}}, m)
+Polyhedra.HRepresentation(m::VMatrix) = Base.convert(LiftedHRepresentation{Rational{BigInt}}, m)
+Polyhedra.LiftedHRepresentation(m::VMatrix) = Base.convert(LiftedHRepresentation{Rational{BigInt}}, m)
 
 function Base.convert(::Type{LiftedVRepresentation{Rational{BigInt}}}, m::HMatrix)
     linset = getoutputlinset(m)
     R = enumtomat(m)
     LiftedVRepresentation{Rational{BigInt}}(R, linset)
 end
-VRepresentation(m::HMatrix) = Base.convert(LiftedVRepresentation{Rational{BigInt}}, m)
-LiftedVRepresentation(m::HMatrix) = Base.convert(LiftedVRepresentation{Rational{BigInt}}, m)
+Polyhedra.VRepresentation(m::HMatrix) = Base.convert(LiftedVRepresentation{Rational{BigInt}}, m)
+Polyhedra.LiftedVRepresentation(m::HMatrix) = Base.convert(LiftedVRepresentation{Rational{BigInt}}, m)
 
 function Base.convert(::Type{HMatrix}, m::VMatrix)
     linset = getoutputlinset(m)
