@@ -213,7 +213,7 @@ function buildrep(player_idx::Integer,
     nonnegativity_subarray[diagind(nonnegativity_subarray)] .= 1
 
     # FillConstraintRows
-    # Negate after the conversion to Rational{BigInt}
+    # Negate after the conversion to Rational{BigInt}, otherwise negation won't work if opponent_payoff_matrix's eltype is unsigned
     constraint_subarray[:, 1:end-1] = opponent_payoff_matrix
     constraint_subarray[:, 1:end-1] .*= -1
     constraint_subarray[:, end] .= 1
