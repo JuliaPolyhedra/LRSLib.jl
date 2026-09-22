@@ -2,7 +2,7 @@
 Julia wrapper/translation of lrs_solve_nash
 
 =#
-const RatOrInt = Union{Rational,Int}
+const RatOrInt = Union{Rational,Integer}
 
 """
     nashsolve(A::AbstractMatrix, B::AbstractMatrix)
@@ -213,7 +213,9 @@ function buildrep(player_idx::Integer,
     nonnegativity_subarray[diagind(nonnegativity_subarray)] .= 1
 
     # FillConstraintRows
-    constraint_subarray[:, 1:end-1] = -opponent_payoff_matrix
+    # Negate after the conversion to Rational{BigInt}, otherwise negation won't work if opponent_payoff_matrix's eltype is unsigned
+    constraint_subarray[:, 1:end-1] = opponent_payoff_matrix
+    constraint_subarray[:, 1:end-1] .*= -1
     constraint_subarray[:, end] .= 1
 
     # FillLinearityRow

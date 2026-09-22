@@ -23,6 +23,13 @@ using LRSLib: nashsolve, readgame
         B_rat = B .// 7
         NEs_computed = @inferred(nashsolve(A, B_rat))
         @test sort(NEs_computed) == sort(NEs)
+
+        @testset "$T" for T in [BigInt, Int32, Int8, UInt8, UInt64,
+                                Rational{BigInt}, Rational{Int32},
+                                Rational{UInt8}]
+            NEs_computed = @inferred(nashsolve(T.(A), T.(B)))
+            @test sort(NEs_computed) == sort(NEs)
+        end
     end
 
     @testset "Tests for nashsolve with degenerate game" begin
