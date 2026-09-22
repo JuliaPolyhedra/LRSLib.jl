@@ -151,6 +151,19 @@ Base.length(matrix::VMatrix) = _length(matrix.P) + matrix.cone
 
 RepMatrix(hrep::HRepresentation) = convert(HMatrix, hrep)
 RepMatrix(vrep::VRepresentation) = convert(VMatrix, vrep)
+# The generic conversion iterates over the hyperplanes and then the halfspaces
+# (resp. the points, the lines and then the rays) so it may reorder the rows.
+# As the row numbers returned by LRS (e.g., by `redund`) are used as row numbers
+# of the lifted representation, the rows are loaded in the order of the matrix
+# so that row `i` of the LRS matrix is row `i` of the lifted representation.
+function RepMatrix(ine::LiftedHRepresentation{Rational{BigInt}})
+    P, Q = initmatrix(ine.A, ine.linset, true)
+    return HMatrix(size(ine.A, 2) - 1, P, Q)
+end
+function RepMatrix(ext::LiftedVRepresentation{Rational{BigInt}})
+    P, Q = initmatrix(ext.R, ext.linset, false)
+    return VMatrix(size(ext.R, 2) - 1, P, Q)
+end
 
 function checkfreshness(m::RepMatrix, fresh::Symbol)
     fresh == :AnyFreshNess ||

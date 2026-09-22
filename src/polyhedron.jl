@@ -52,6 +52,8 @@ function getine(p::Polyhedron)
     if p.ine === nothing
         if p.inem !== nothing && checkfreshness(p.inem, :Fresh)
             p.ine = p.inem
+            # The conversion may have reordered the rows
+            p.inem = nothing
         else
             p.ine = LiftedHRepresentation(getextm(p, :Fresh))
             p.inem = nothing
@@ -70,6 +72,8 @@ function getext(p::Polyhedron)
     if p.ext === nothing
         if p.extm !== nothing && checkfreshness(p.extm, :Fresh)
             p.ext = p.extm
+            # The conversion may have reordered the rows
+            p.extm = nothing
         else
             p.ext = LiftedVRepresentation(getinem(p, :Fresh))
             p.extm = nothing
@@ -98,9 +102,11 @@ end
 
 function Polyhedra.sethrep!(p::Polyhedron, h::HRepresentation{Rational{BigInt}})
     p.ine = h
+    p.inem = nothing
 end
 function Polyhedra.setvrep!(p::Polyhedron, v::VRepresentation{Rational{BigInt}})
     p.ext = v
+    p.extm = nothing
 end
 function Polyhedra.resethrep!(p::Polyhedron, h::HRepresentation{Rational{BigInt}})
     clearfield!(p)
@@ -175,6 +181,8 @@ function Polyhedra.removehredundancy!(p::Polyhedron)
     lin = collect(linset)
     ine.A = [ine.A[lin,:]; ine.A[nonred,:]]
     ine.linset = BitSet(1:length(linset))
+    # The rows of `inem` do not correspond to the rows of `ine` anymore
+    p.inem = nothing
     p.noredundantinequality = true
     #end
 end
@@ -183,12 +191,14 @@ function Polyhedra.removevredundancy!(p::Polyhedron)
         detectvlinearity!(p)
         ext = getext(p)
         extm = getextm(p, :AlmostFresh) # FIXME does it need to be fresh ?
-        redset = BitSet(redund(extm) .+ 1)
+        redset = redund(extm)
         nonred = setdiff(BitSet(1:size(ext.R, 1)), redset)
         nonred = collect(setdiff(nonred, ext.linset))
         lin = collect(ext.linset)
         ext.R = [ext.R[lin,:]; ext.R[nonred,:]]
         ext.linset = BitSet(1:length(ext.linset))
+        # The rows of `extm` do not correspond to the rows of `ext` anymore
+        p.extm = nothing
         p.noredundantgenerator = true
     end
 end
