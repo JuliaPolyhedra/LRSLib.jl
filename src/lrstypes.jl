@@ -1,5 +1,8 @@
 # It is immutable so that it is stored by value in the structures
 # Clrs_dic and Clrs_dat and not by reference
+# `Base.GMP.libgmp` was added in Julia 1.9
+const libgmp = isdefined(Base.GMP, :libgmp) ? Base.GMP.libgmp : :libgmp
+
 struct GMPInteger
     alloc::Cint
     size::Cint
@@ -16,13 +19,13 @@ primitive type Clrs_fname 32768 end  # 4096 * 8
 
 function extractbigintat(array::Clrs_mp_vector, i::Int)
     tmp = BigInt()
-    ccall((:__gmpz_set, :libgmp), Nothing, (Ptr{BigInt}, Ptr{BigInt}), pointer_from_objref(tmp), array + (i-1) * sizeof(GMPInteger))
+    ccall((:__gmpz_set, libgmp), Nothing, (Ptr{BigInt}, Ptr{BigInt}), pointer_from_objref(tmp), array + (i-1) * sizeof(GMPInteger))
     tmp
 end
 
 function extractbigint(a::Clrs_mp)
     tmp = BigInt()
-    ccall((:__gmpz_set, :libgmp), Cvoid, (Ptr{BigInt}, Ref{Clrs_mp}), pointer_from_objref(tmp), a)
+    ccall((:__gmpz_set, libgmp), Cvoid, (Ptr{BigInt}, Ref{Clrs_mp}), pointer_from_objref(tmp), a)
     tmp
 end
 
